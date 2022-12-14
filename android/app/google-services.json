@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1016045426707",
+    "project_id": "myqris-79908",
+    "storage_bucket": "myqris-79908.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1016045426707:android:4b39cf2f17aa623e2487e6",
+        "android_client_info": {
+          "package_name": "com.myqris.myqrisapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1016045426707-raeiejijcsiitmkd0d73ct9h92firprs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.myqris.myqrisapp",
+            "certificate_hash": "823d589e9f380276cf053036b3a0865ea343ba60"
+          }
+        },
+        {
+          "client_id": "1016045426707-kiimtqtdeej8f4tjqi7sg1cgd5e56i7l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbHnmgnmfDhF6l-5UexXzJxhDLUOw1Zj8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1016045426707-kiimtqtdeej8f4tjqi7sg1cgd5e56i7l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
