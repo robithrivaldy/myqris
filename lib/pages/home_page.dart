@@ -188,16 +188,17 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
     MainProvider mainProvider = Provider.of<MainProvider>(context);
+    if (mainProvider.isLoading == false) {
+      if (mainProvider.main.status == "Requested") {
+        stringStatus = "Lengkapi Data Diri";
+      }
+      if (mainProvider.main.status == "Verifying") {
+        stringStatus = "⏳ Menunggu verifikasi 2x 24 jam";
+      }
 
-    if (mainProvider.main.status == "Requested") {
-      stringStatus = "Lengkapi Data Diri";
-    }
-    if (mainProvider.main.status == "Verifying") {
-      stringStatus = "⏳ Menunggu verifikasi 2x 24 jam";
-    }
-
-    if (mainProvider.main.status == "Rejected") {
-      stringStatus = "⛔️ Ditolak, silahkan verifikasi ulang";
+      if (mainProvider.main.status == "Rejected") {
+        stringStatus = "⛔️ Ditolak, silahkan verifikasi ulang";
+      }
     }
 
     tarikSaldoHandle() async {
@@ -283,336 +284,343 @@ class _HomePageState extends State<HomePage>
     return Scaffold(
       backgroundColor: bgColor,
       body: SafeArea(
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 30,
-                horizontal: 16,
-              ),
-              child: RefreshIndicator(
-                backgroundColor: Colors.white,
-                color: primaryColor,
-                onRefresh: () => getdata(),
-                child: ListView(
-                  children: [
-                    InkWell(
-                      onTap: () async {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ProfilePage(mainProvider.main),
-                          ),
-                        );
-                      },
-                      splashColor: greyColor,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: mainProvider.isLoading
+            ? LazyAntrian()
+            : Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 30,
+                      horizontal: 16,
+                    ),
+                    child: RefreshIndicator(
+                      backgroundColor: Colors.white,
+                      color: primaryColor,
+                      onRefresh: () => getdata(),
+                      child: ListView(
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Hi, ${mainProvider.main.name ?? ''}',
-                                style: nunitoTextStyle.copyWith(
-                                  color: blackColor,
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 20,
+                          InkWell(
+                            onTap: () async {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ProfilePage(mainProvider.main),
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              Text(
-                                'Yuk mulai transaksimu dengan My QRIS ',
-                                style: nunitoTextStyle.copyWith(
-                                  color: blackColor,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Image.asset(
-                            "assets/avatar.png",
-                            height: 56,
-                            width: 56,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    mainProvider.main.status == "Activated"
-                        ? const SizedBox()
-                        : InkWell(
-                            onTap: () {
-                              if (mainProvider.main.status != "Verifying") {
-                                showModalBottomSheet<void>(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    shape: const RoundedRectangleBorder(
-                                      // borderRadius: BorderRadius.circular(14),
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(14),
-                                        topRight: Radius.circular(14),
+                              );
+                            },
+                            splashColor: greyColor,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Hi, ${mainProvider.main.name ?? ''}',
+                                      style: nunitoTextStyle.copyWith(
+                                        color: blackColor,
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 20,
                                       ),
                                     ),
-                                    backgroundColor: Colors.white,
-                                    builder: (BuildContext context) {
-                                      return StatefulBuilder(
-                                          builder: (context, setNewState) {
-                                        return VerivicationSheet();
-                                      });
-                                    });
-                              }
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.only(bottom: 16),
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 14),
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                  color: const Color(0xFFF2F2F2),
-                                  borderRadius: BorderRadius.circular(14)),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    stringStatus,
-                                    style: nunitoTextStyle.copyWith(
-                                      color: blackColor,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 14,
+                                    const SizedBox(
+                                      height: 8,
                                     ),
-                                  ),
-                                  mainProvider.main.status == "Verifying"
-                                      ? const SizedBox()
-                                      : const Icon(
-                                          Icons.arrow_right_alt_outlined,
-                                          size: 30,
-                                        ),
-                                ],
-                              ),
+                                    Text(
+                                      'Yuk mulai transaksimu dengan My QRIS ',
+                                      style: nunitoTextStyle.copyWith(
+                                        color: blackColor,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Image.asset(
+                                  "assets/avatar.png",
+                                  height: 56,
+                                  width: 56,
+                                ),
+                              ],
                             ),
                           ),
-                    Container(
-                      padding: const EdgeInsets.only(
-                          top: 22, bottom: 24, left: 24, right: 24),
-                      decoration: BoxDecoration(
-                        image: const DecorationImage(
-                          image: AssetImage("assets/bg_saldo.png"),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Saldo Anda',
-                                style: nunitoTextStyle.copyWith(
-                                  color: whiteColor,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              showSaldo == true
-                                  ? IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          showSaldo = false;
-                                        });
-                                      },
-                                      icon: Icon(
-                                        Icons.visibility_outlined,
-                                        size: 30,
-                                        color: whiteColor,
-                                      ),
-                                    )
-                                  : IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          showSaldo = true;
-                                        });
-                                      },
-                                      icon: Icon(
-                                        Icons.visibility_off_outlined,
-                                        size: 30,
-                                        color: whiteColor,
-                                      ),
-                                    ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          showSaldo == true
-                              ? Text(
-                                  NumberFormat.currency(
-                                          locale: 'id',
-                                          symbol: 'Rp ',
-                                          decimalDigits: 0)
-                                      .format(mainProvider.main.saldo!),
-                                  style: nunitoTextStyle.copyWith(
-                                    color: whiteColor,
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 24,
-                                  ),
-                                )
-                              : Text(
-                                  '***********',
-                                  style: nunitoTextStyle.copyWith(
-                                    color: whiteColor,
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 24,
-                                  ),
-                                ),
                           const SizedBox(
                             height: 16,
                           ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () async {
-                                    tarikSaldoHandle();
+                          mainProvider.main.status == "Activated"
+                              ? const SizedBox()
+                              : InkWell(
+                                  onTap: () {
+                                    if (mainProvider.main.status !=
+                                        "Verifying") {
+                                      showModalBottomSheet<void>(
+                                          context: context,
+                                          isScrollControlled: true,
+                                          shape: const RoundedRectangleBorder(
+                                            // borderRadius: BorderRadius.circular(14),
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(14),
+                                              topRight: Radius.circular(14),
+                                            ),
+                                          ),
+                                          backgroundColor: Colors.white,
+                                          builder: (BuildContext context) {
+                                            return StatefulBuilder(builder:
+                                                (context, setNewState) {
+                                              return VerivicationSheet();
+                                            });
+                                          });
+                                    }
                                   },
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.save_alt,
-                                        size: 24,
-                                        color: whiteColor,
-                                      ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      Text(
-                                        'Tarik Saldo',
-                                        style: nunitoTextStyle.copyWith(
-                                          color: whiteColor,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 16,
+                                  child: Container(
+                                    margin: const EdgeInsets.only(bottom: 16),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 14),
+                                    width: MediaQuery.of(context).size.width,
+                                    decoration: BoxDecoration(
+                                        color: const Color(0xFFF2F2F2),
+                                        borderRadius:
+                                            BorderRadius.circular(14)),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          stringStatus,
+                                          style: nunitoTextStyle.copyWith(
+                                            color: blackColor,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 14,
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: InkWell(
-                                  splashColor: greyColor,
-                                  onTap: () => showModalBottomSheet<void>(
-                                    isScrollControlled: true,
-                                    context: context,
-                                    barrierColor: Colors.black.withOpacity(0.5),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(14.0),
-                                          topRight: Radius.circular(14.0)),
+                                        mainProvider.main.status == "Verifying"
+                                            ? const SizedBox()
+                                            : const Icon(
+                                                Icons.arrow_right_alt_outlined,
+                                                size: 30,
+                                              ),
+                                      ],
                                     ),
-                                    builder: (BuildContext context) {
-                                      return BuatQrSheet();
-                                    },
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.qr_code,
-                                        size: 24,
-                                        color: whiteColor,
-                                      ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      Text(
-                                        'Buat QR',
-                                        style: nunitoTextStyle.copyWith(
-                                          color: whiteColor,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ],
                                   ),
                                 ),
+                          Container(
+                            padding: const EdgeInsets.only(
+                                top: 22, bottom: 24, left: 24, right: 24),
+                            decoration: BoxDecoration(
+                              image: const DecorationImage(
+                                image: AssetImage("assets/bg_saldo.png"),
+                                fit: BoxFit.cover,
                               ),
-                            ],
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Saldo Anda',
+                                      style: nunitoTextStyle.copyWith(
+                                        color: whiteColor,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    showSaldo == true
+                                        ? IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                showSaldo = false;
+                                              });
+                                            },
+                                            icon: Icon(
+                                              Icons.visibility_outlined,
+                                              size: 30,
+                                              color: whiteColor,
+                                            ),
+                                          )
+                                        : IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                showSaldo = true;
+                                              });
+                                            },
+                                            icon: Icon(
+                                              Icons.visibility_off_outlined,
+                                              size: 30,
+                                              color: whiteColor,
+                                            ),
+                                          ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                showSaldo == true
+                                    ? Text(
+                                        NumberFormat.currency(
+                                                locale: 'id',
+                                                symbol: 'Rp ',
+                                                decimalDigits: 0)
+                                            .format(mainProvider.main.saldo!),
+                                        style: nunitoTextStyle.copyWith(
+                                          color: whiteColor,
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 24,
+                                        ),
+                                      )
+                                    : Text(
+                                        '***********',
+                                        style: nunitoTextStyle.copyWith(
+                                          color: whiteColor,
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 24,
+                                        ),
+                                      ),
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: InkWell(
+                                        onTap: () async {
+                                          tarikSaldoHandle();
+                                        },
+                                        child: Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.save_alt,
+                                              size: 24,
+                                              color: whiteColor,
+                                            ),
+                                            const SizedBox(
+                                              width: 8,
+                                            ),
+                                            Text(
+                                              'Tarik Saldo',
+                                              style: nunitoTextStyle.copyWith(
+                                                color: whiteColor,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: InkWell(
+                                        splashColor: greyColor,
+                                        onTap: () => showModalBottomSheet<void>(
+                                          isScrollControlled: true,
+                                          context: context,
+                                          barrierColor:
+                                              Colors.black.withOpacity(0.5),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(14.0),
+                                                topRight:
+                                                    Radius.circular(14.0)),
+                                          ),
+                                          builder: (BuildContext context) {
+                                            return BuatQrSheet();
+                                          },
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.qr_code,
+                                              size: 24,
+                                              color: whiteColor,
+                                            ),
+                                            const SizedBox(
+                                              width: 8,
+                                            ),
+                                            Text(
+                                              'Buat QR',
+                                              style: nunitoTextStyle.copyWith(
+                                                color: whiteColor,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 16,
-                right: 16,
-              ),
-              child: Column(
-                children: [
-                  mainProvider.main.status == "Activated"
-                      ? SizedBox(
-                          height: 300,
-                        )
-                      : SizedBox(
-                          height: 360,
-                        ),
-                  Container(
-                    height: 42,
-                    padding: const EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                        color: Color(0xffF0F0F0),
-                        borderRadius: BorderRadius.circular(12)),
-                    child: TabBar(
-                      controller: _tabController,
-                      indicator: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.white,
-                      ),
-                      labelColor: blackColor,
-                      unselectedLabelColor: blackColor,
-                      labelStyle: nunitoTextStyle.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: blackColor,
-                        fontSize: 14,
-                      ),
-                      tabs: [
-                        Tab(
-                          text: 'Transaksi',
-                        ),
-                        Tab(
-                          text: 'Tarik Saldo',
-                        ),
-                      ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      right: 16,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  Expanded(
-                    child: TabBarView(
-                      controller: _tabController,
+                    child: Column(
                       children: [
-                        Transactions(),
-                        Withdraws(),
+                        mainProvider.main.status == "Activated"
+                            ? SizedBox(
+                                height: 300,
+                              )
+                            : SizedBox(
+                                height: 360,
+                              ),
+                        Container(
+                          height: 42,
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                              color: Color(0xffF0F0F0),
+                              borderRadius: BorderRadius.circular(12)),
+                          child: TabBar(
+                            controller: _tabController,
+                            indicator: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.white,
+                            ),
+                            labelColor: blackColor,
+                            unselectedLabelColor: blackColor,
+                            labelStyle: nunitoTextStyle.copyWith(
+                              fontWeight: FontWeight.w800,
+                              color: blackColor,
+                              fontSize: 14,
+                            ),
+                            tabs: [
+                              Tab(
+                                text: 'Transaksi',
+                              ),
+                              Tab(
+                                text: 'Tarik Saldo',
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        Expanded(
+                          child: TabBarView(
+                            controller: _tabController,
+                            children: [
+                              Transactions(),
+                              Withdraws(),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }

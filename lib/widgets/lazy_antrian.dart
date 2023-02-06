@@ -46,7 +46,7 @@ class LazyAntrian extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         const SizedBox(
-          height: 40,
+          height: 30,
         ),
         // for (var i = 0; i < 5; i++)
         //   shimmer(
@@ -76,11 +76,11 @@ class LazyAntrian extends StatelessWidget {
         shimmer(
           Container(
             margin: const EdgeInsets.symmetric(
-              vertical: 8,
+              vertical: 4,
               horizontal: 20,
             ),
             width: MediaQuery.of(context).size.width,
-            height: 60,
+            height: 40,
             child: _containerItem(
               _widgetInfo(),
             ),
@@ -103,24 +103,11 @@ class LazyAntrian extends StatelessWidget {
         shimmer(
           Container(
             margin: const EdgeInsets.symmetric(
-              vertical: 8,
-              horizontal: 20,
-            ),
-            width: MediaQuery.of(context).size.width * 0.4,
-            height: 20,
-            child: _containerItem(
-              _widgetInfo(),
-            ),
-          ),
-        ),
-        shimmer(
-          Container(
-            margin: const EdgeInsets.symmetric(
-              vertical: 8,
+              vertical: 4,
               horizontal: 20,
             ),
             width: MediaQuery.of(context).size.width,
-            height: 24,
+            height: 60,
             child: _containerItem(
               _widgetInfo(),
             ),
@@ -134,7 +121,7 @@ class LazyAntrian extends StatelessWidget {
               horizontal: 20,
             ),
             width: MediaQuery.of(context).size.width,
-            height: 60,
+            height: 80,
             child: _containerItem(
               _widgetInfo(),
             ),
@@ -147,7 +134,7 @@ class LazyAntrian extends StatelessWidget {
               horizontal: 20,
             ),
             width: MediaQuery.of(context).size.width,
-            height: 60,
+            height: 80,
             child: _containerItem(
               _widgetInfo(),
             ),
@@ -160,7 +147,7 @@ class LazyAntrian extends StatelessWidget {
               horizontal: 20,
             ),
             width: MediaQuery.of(context).size.width,
-            height: 60,
+            height: 80,
             child: _containerItem(
               _widgetInfo(),
             ),

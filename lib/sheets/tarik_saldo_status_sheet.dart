@@ -88,7 +88,7 @@ class _TarikSaldoStatusSheetState extends State<TarikSaldoStatusSheet> {
                                 recognizer: new TapGestureRecognizer()
                                   ..onTap = () {
                                     launch(
-                                        'https://cooing-moat-59d.notion.site/Syarat-dan-Ketentuan-c296c2e739e54af398cb19b665f8ddc0');
+                                        'https://cooing-moat-59d.notion.site/Terms-Conditions-317aeb029981494c9acb0e7c99c69983');
                                   },
                               ),
                               TextSpan(

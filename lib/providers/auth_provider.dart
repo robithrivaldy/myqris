@@ -80,8 +80,6 @@ class AuthProvider with ChangeNotifier {
     required String email,
     required String name,
   }) async {
-    EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
-
     await FirebaseMessaging.instance.getToken().then((value) async {
       print(value);
 
@@ -90,13 +88,7 @@ class AuthProvider with ChangeNotifier {
 
       _user = user;
 
-      EasyLoading.dismiss();
       Get.offAll(() => const HomePage());
-    }).catchError((err) {
-      EasyLoading.dismiss();
-      MsgHelper.snackErrorTry(() {
-        login(email: email, name: name);
-      });
     });
   }
 

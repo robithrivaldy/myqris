@@ -33,22 +33,27 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
-  getdata() async {
-    await Provider.of<AuthProvider>(context, listen: false).getSession();
+  // getdata() async {
+  //   await Provider.of<AuthProvider>(context, listen: false).getSession();
 
-    await Future.delayed(Duration(seconds: 1)).then((value) async {
-      await Provider.of<MainProvider>(context, listen: false).getMain();
-      await Provider.of<WithdrawProvider>(context, listen: false).getWithdraw();
-    });
-    setState(() {});
-  }
+  //   await Future.delayed(Duration(seconds: 1)).then((value) async {
+  //     await Provider.of<MainProvider>(context, listen: false).getMain();
+  //     await Provider.of<WithdrawProvider>(context, listen: false).getWithdraw();
+  //   });
+  //   setState(() {});
+  // }
 
   @override
   Widget build(BuildContext context) {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
     loginHandle() async {
+      EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
+
       await GoogleApi.login().then((value) async {
         await authProvider.login(email: value!.email, name: value.displayName!);
+        EasyLoading.dismiss();
+      }).catchError((err) {
+        EasyLoading.dismiss();
       });
     }
 
@@ -129,7 +134,8 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 recognizer: new TapGestureRecognizer()
                                   ..onTap = () {
-                                    launch('https://policies.google.com/terms');
+                                    launch(
+                                        'https://cooing-moat-59d.notion.site/Terms-Conditions-317aeb029981494c9acb0e7c99c69983');
                                   },
                               ),
                               TextSpan(
@@ -145,7 +151,8 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 recognizer: new TapGestureRecognizer()
                                   ..onTap = () {
-                                    launch('https://policies.google.com/terms');
+                                    launch(
+                                        'https://www.privacypolicies.com/live/61bf44ac-e799-49bb-99ca-c8969c663b05');
                                   },
                               ),
                             ],
