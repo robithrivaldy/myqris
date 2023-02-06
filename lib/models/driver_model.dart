@@ -26,16 +26,16 @@ class DriverModel {
   });
 
   DriverModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    email = json['email'];
+    id = json['id'] ?? 0;
+    name = json['name'] ?? '';
+    email = json['email'] ?? '';
     phone = json['phone'] ?? '';
-    googleId = json['google_id'];
+    googleId = json['google_id'] ?? '';
     saldo = json['saldo'] ?? 0;
-    status = json['status'];
+    status = json['status'] ?? '';
     idCardNumber = json['id_card_number'] ?? '';
     idCardDocPath = json['id_card_doc_path'] ?? '';
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    createdAt = json['created_at'] ?? '';
+    updatedAt = json['updated_at'] ?? '';
   }
 }

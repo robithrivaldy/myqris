@@ -113,7 +113,46 @@ class LazyAntrian extends StatelessWidget {
             ),
           ),
         ),
+        shimmer(
+          Container(
+            margin: const EdgeInsets.symmetric(
+              vertical: 8,
+              horizontal: 20,
+            ),
+            width: MediaQuery.of(context).size.width,
+            height: 24,
+            child: _containerItem(
+              _widgetInfo(),
+            ),
+          ),
+        ),
 
+        shimmer(
+          Container(
+            margin: const EdgeInsets.symmetric(
+              vertical: 8,
+              horizontal: 20,
+            ),
+            width: MediaQuery.of(context).size.width,
+            height: 60,
+            child: _containerItem(
+              _widgetInfo(),
+            ),
+          ),
+        ),
+        shimmer(
+          Container(
+            margin: const EdgeInsets.symmetric(
+              vertical: 8,
+              horizontal: 20,
+            ),
+            width: MediaQuery.of(context).size.width,
+            height: 60,
+            child: _containerItem(
+              _widgetInfo(),
+            ),
+          ),
+        ),
         shimmer(
           Container(
             margin: const EdgeInsets.symmetric(

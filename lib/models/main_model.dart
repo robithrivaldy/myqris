@@ -27,12 +27,12 @@ class MainModel {
       this.updatedAt});
 
   MainModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    email = json['email'];
+    id = json['id'] ?? 0;
+    name = json['name'] ?? '';
+    email = json['email'] ?? '';
     phone = json['phone'] ?? '';
-    saldo = json['saldo'];
-    status = json['status'];
+    saldo = json['saldo'] ?? 0;
+    status = json['status'] ?? '';
     idCardNumber = json['id_card_number'] ?? '';
     idCardDocUrl = json['id_card_doc_url'] ?? '';
     if (json['transactions'] != null) {
@@ -40,9 +40,12 @@ class MainModel {
       json['transactions'].forEach((v) {
         transactions!.add(new TransactionsModel.fromJson(v));
       });
+    } else {
+      transactions = <TransactionsModel>[];
     }
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    createdAt = json['created_at'] ?? '';
+
+    updatedAt = json['updated_at'] ?? '';
   }
 
   Map<String, dynamic> toJson() {

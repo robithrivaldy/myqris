@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'dart:async';
 import 'package:myqris/models/auth_model.dart';
+import 'package:myqris/models/driver_model.dart';
 import 'package:myqris/models/profile_model.dart';
 import 'package:myqris/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,15 +45,13 @@ class AuthService {
 
       _sharedPrefs = await SharedPreferences.getInstance();
 
-      _sharedPrefs?.setInt('id', user.driver!.id!);
-      _sharedPrefs?.setString('name', user.driver!.name!);
-      _sharedPrefs?.setString('email', user.driver!.email!);
-      _sharedPrefs?.setString('phone', user.driver!.phone ?? '');
-      _sharedPrefs?.setInt('saldo', user.driver!.saldo ?? 0);
+      // _sharedPrefs?.setInt('id', user.driver!.id!);
+      // _sharedPrefs?.setString('name', user.driver!.name!);
+      // _sharedPrefs?.setString('email', user.driver!.email!);
+      // _sharedPrefs?.setString('phone', user.driver!.phone ?? '');
+      // _sharedPrefs?.setInt('saldo', user.driver!.saldo ?? 0);
+      // _sharedPrefs?.setBool('isLogin', true);
       _sharedPrefs?.setString('token', user.token!);
-      _sharedPrefs?.setBool('isLogin', true);
-
-      print(_sharedPrefs?.getString('email'));
       print(_sharedPrefs?.getString('token'));
       return user;
     } else {
@@ -98,14 +97,16 @@ class AuthService {
       headers: headers,
     );
 
-    if (response.statusCode == 200) {
-      var data = jsonDecode(response.body)['data'];
-      print(data);
-      ProfileModel main = ProfileModel.fromJson(data);
+    // if (response.statusCode == 200) {
+    //   var data = jsonDecode(response.body)['data'];
+    //   print(data);
+    //   ProfileModel main = ProfileModel.fromJson(data);
 
-      return main;
-    } else {
-      throw Exception('Gagal mengambil data ');
-    }
+    //   return main;
+    // } else {
+    //   throw Exception('Gagal mengambil data ');
+    // }
+
+    return ProfileModel.fromJson(jsonDecode(response.body)['data']);
   }
 }

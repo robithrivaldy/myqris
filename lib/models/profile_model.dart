@@ -31,20 +31,20 @@ class ProfileModel {
       this.updatedAt});
 
   ProfileModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    email = json['email'];
-    phone = json['phone'];
-    saldo = json['saldo'];
-    status = json['status'];
+    id = json['id'] ?? 0;
+    name = json['name'] ?? '';
+    email = json['email'] ?? '';
+    phone = json['phone'] ?? '';
+    saldo = json['saldo'] ?? 0;
+    status = json['status'] ?? '';
     idCardNumber = json['id_card_number'] ?? '';
     idCardDocUrl = json['id_card_doc_url'] ?? '';
-    fcmToken = json['fcm_token'];
+    fcmToken = json['fcm_token'] ?? '';
     bankCode = json['bank_code'] ?? '';
     beneficiaryAccountNumber = json['beneficiary_account_number'] ?? '';
     beneficiaryAccountHolder = json['beneficiary_account_holder'] ?? '';
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    createdAt = json['created_at'] ?? '';
+    updatedAt = json['updated_at'] ?? '';
   }
 
   Map<String, dynamic> toJson() {

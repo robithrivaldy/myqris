@@ -4,7 +4,7 @@ class TransactionsModel {
   int? driverId;
   int? amount;
   int? fee;
-  int? total;
+  int? totalRevenue;
   String? status;
   String? qrCode;
   String? paidAt;
@@ -20,7 +20,7 @@ class TransactionsModel {
       this.driverId,
       this.amount,
       this.fee,
-      this.total,
+      this.totalRevenue,
       this.status,
       this.qrCode,
       this.paidAt,
@@ -31,20 +31,20 @@ class TransactionsModel {
       this.updatedAt});
 
   TransactionsModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    referenceNumber = json['reference_number'];
-    driverId = json['driver_id'];
-    amount = json['amount'];
-    fee = json['fee'];
-    total = json['total'];
+    id = json['id'] ?? 0;
+    referenceNumber = json['reference_number'] ?? '';
+    driverId = json['driver_id'] ?? 0;
+    amount = json['amount'] ?? 0;
+    fee = json['fee'] ?? 0;
+    totalRevenue = json['total_revenue'] ?? 0;
     status = json['status'];
     qrCode = json['qr_code'] ?? '';
     paidAt = json['paid_at'] ?? '';
     paidBy = json['paid_by'] ?? '';
     paidByLogo = json['paid_by_logo'] ?? '';
-    expiredAt = json['expired_at'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    expiredAt = json['expired_at'] ?? '';
+    createdAt = json['created_at'] ?? '';
+    updatedAt = json['updated_at'] ?? '';
   }
 
   Map<String, dynamic> toJson() {
@@ -54,7 +54,7 @@ class TransactionsModel {
     data['driver_id'] = this.driverId;
     data['amount'] = this.amount;
     data['fee'] = this.fee;
-    data['total'] = this.total;
+    data['totalRevenue'] = this.totalRevenue;
     data['status'] = this.status;
     data['qr_code'] = this.qrCode;
     data['paid_at'] = this.paidAt;

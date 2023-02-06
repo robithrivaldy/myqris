@@ -1,0 +1,7 @@
+flutter_application_id:
+  android: 
+    id: "com.myqris.myqrisapp"
+    name: "My QRIS"
+  ios:
+    id: "com.myqris.myqrisapp"
+    name: "My QRIS"

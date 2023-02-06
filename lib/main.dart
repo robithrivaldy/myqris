@@ -1,12 +1,15 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:myqris/pages/home_page.dart';
 import 'package:myqris/pages/login_page.dart';
+import 'package:myqris/pages/no_internet_page.dart';
 import 'package:myqris/pages/profile_page.dart';
 import 'package:myqris/pages/splash_page.dart';
 import 'package:myqris/providers/auth_provider.dart';
@@ -36,6 +39,7 @@ class MyHttpOverrides extends HttpOverrides {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
   HttpOverrides.global = new MyHttpOverrides();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -63,6 +67,7 @@ void main() async {
   }
   await initializeDateFormatting('id_ID', null);
   runApp(const MyApp());
+  configLoading();
 }
 
 class MyApp extends StatelessWidget {
@@ -86,9 +91,9 @@ class MyApp extends StatelessWidget {
           create: (context) => WithdrawProvider(),
         ),
       ],
-      child: MaterialApp(
+      child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Bantumaxim',
+        title: 'My QRIS',
         builder: EasyLoading.init(),
         routes: {
           // MAIN PAGE
@@ -96,7 +101,9 @@ class MyApp extends StatelessWidget {
           '/login': (context) => const LoginPage(),
           '/home': (context) => HomePage(),
 
-          '/profile': (context) => ProfilePage(),
+          // '/profile': (context) => ProfilePage(),
+
+          '/error': (context) => NoInternetPage(),
         },
       ),
     );
@@ -106,18 +113,18 @@ class MyApp extends StatelessWidget {
 void configLoading() {
   EasyLoading.instance
     ..displayDuration = const Duration(milliseconds: 2000)
-    ..indicatorType = EasyLoadingIndicatorType.doubleBounce
+    ..indicatorType = EasyLoadingIndicatorType.ring
     ..loadingStyle = EasyLoadingStyle.custom
     ..indicatorSize = 45.0
     ..radius = 10.0
-    ..progressColor = Colors.white
-    ..backgroundColor = Colors.black38
-    ..indicatorColor = Colors.white
+    ..progressColor = Colors.black
+    ..backgroundColor = Colors.white
+    ..indicatorColor = Colors.black
     ..maskType = EasyLoadingMaskType.black
     ..textColor = Colors.white
     ..userInteractions = false
     ..dismissOnTap = false
-    ..textStyle = GoogleFonts.poppins(color: Colors.white, fontSize: 12.5)
+    ..textStyle = GoogleFonts.poppins(color: Colors.black, fontSize: 12.5)
     ..customAnimation = CustomAnimation();
 }
 

@@ -49,42 +49,42 @@ class _BankSheetState extends State<BankSheet> {
               ),
             ],
           ),
+          // Container(
+          //   margin: const EdgeInsets.only(top: 64),
+          //   decoration: BoxDecoration(
+          //     color: Colors.white,
+          //     borderRadius: BorderRadius.circular(14),
+          //   ),
+          //   child: TextFormField(
+          //     autocorrect: true,
+          //     style: nunitoTextStyle.copyWith(
+          //       color: blackColor,
+          //       fontSize: 16,
+          //       fontWeight: FontWeight.w400,
+          //     ),
+          //     decoration: InputDecoration(
+          //       isDense: true,
+          //       hintText: ' Cari Bank',
+          //       prefixIcon: const Icon(Icons.search_sharp, size: 26),
+          //       hintStyle: nunitoTextStyle.copyWith(
+          //         color: Colors.grey,
+          //         fontSize: 16,
+          //         fontWeight: FontWeight.w400,
+          //       ),
+          //       enabledBorder: const OutlineInputBorder(
+          //         borderRadius: BorderRadius.all(Radius.circular(14)),
+          //         borderSide: BorderSide(color: Color(0xffEAEAEA), width: 1),
+          //       ),
+          //       focusedBorder: const OutlineInputBorder(
+          //         borderRadius: BorderRadius.all(Radius.circular(14)),
+          //         borderSide: BorderSide(color: primaryColor, width: 1),
+          //       ),
+          //     ),
+          //   ),
+          // ),
           Container(
-            margin: const EdgeInsets.only(top: 64),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: TextFormField(
-              autocorrect: true,
-              style: nunitoTextStyle.copyWith(
-                color: blackColor,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-              ),
-              decoration: InputDecoration(
-                isDense: true,
-                hintText: ' Cari Bank',
-                prefixIcon: const Icon(Icons.search_sharp, size: 26),
-                hintStyle: nunitoTextStyle.copyWith(
-                  color: Colors.grey,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                ),
-                enabledBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(14)),
-                  borderSide: BorderSide(color: Color(0xffEAEAEA), width: 1),
-                ),
-                focusedBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(14)),
-                  borderSide: BorderSide(color: primaryColor, width: 1),
-                ),
-              ),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 128),
-            height: MediaQuery.of(context).size.height * 0.6,
+            margin: const EdgeInsets.only(top: 60),
+            height: MediaQuery.of(context).size.height * 0.7,
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
               color: Colors.white,
@@ -96,8 +96,9 @@ class _BankSheetState extends State<BankSheet> {
                 children: withdrawProvider.bank
                     .map(
                       (e) => InkWell(
-                        onTap: () {
+                        onTap: () async {
                           withdrawProvider.bankCode = e.name!;
+
                           Navigator.pop(context);
                         },
                         splashColor: greyColor,

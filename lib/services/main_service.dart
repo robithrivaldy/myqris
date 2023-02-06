@@ -22,15 +22,17 @@ class MainService {
       Uri.parse(url),
       headers: headers,
     );
-    print(response.body);
-    if (response.statusCode == 200) {
-      var data = jsonDecode(response.body)['data'];
-      print(data);
-      MainModel main = MainModel.fromJson(data);
+    print(response.statusCode);
+    // if (response.statusCode == 200) {
+    //   var data = jsonDecode(response.body)['data'];
+    //   print(data);
+    //   MainModel main = MainModel.fromJson(data);
 
-      return main;
-    } else {
-      throw Exception('Gagal mengambil data ');
-    }
+    //   return main;
+    // } else {
+    //   throw Exception('Gagal mengambil data ');
+    // }
+
+    return MainModel.fromJson(jsonDecode(response.body)['data']);
   }
 }

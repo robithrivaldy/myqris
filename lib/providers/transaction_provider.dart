@@ -1,6 +1,10 @@
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:myqris/helpers/msg_helper.dart';
 import 'package:myqris/models/main_model.dart';
 import 'package:myqris/models/transactions_model.dart';
+import 'package:myqris/pages/detail_transaction_page.dart';
+import 'package:myqris/pages/home_page.dart';
 import 'package:myqris/services/main_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -11,6 +15,12 @@ class TransactionProvider with ChangeNotifier {
   SharedPreferences? _sharedPrefs;
 
   final nominalQrController = TextEditingController();
+
+  // static const _locale = 'en';
+  // String formatNumber(String s) =>
+  //     NumberFormat.decimalPattern(_locale).format(int.parse(s));
+  // String get currency =>
+  //     NumberFormat.compactSimpleCurrency(locale: _locale).currencySymbol;
 
   static const _locale = 'id';
   String formatNumber(String s) =>
@@ -35,17 +45,36 @@ class TransactionProvider with ChangeNotifier {
   }
 
   Future<void> createQr() async {
-    try {
-      EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
+    // try {
+    //   EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
 
-      TransactionsModel data =
-          await TransactionService().createQr(nominalQrController.text);
+    //   TransactionsModel data = await TransactionService()
+    //       .createQr(nominalQrController.text.replaceAll('.', ''));
+
+    //   EasyLoading.dismiss();
+    //   _transaction = data;
+    // } catch (e) {
+    //   EasyLoading.dismiss();
+    //   MsgHelper.snackErrorTry(() {
+    //     createQr();
+    //   });
+    // }
+    EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
+
+    await TransactionService()
+        .createQr(nominalQrController.text.replaceAll('.', ''))
+        .then((value) {
+      _transaction = value;
       EasyLoading.dismiss();
-      _transaction = data;
-    } catch (e) {
+      Get.offAll(
+        DetailTransactionPage(value),
+      );
+    }).catchError((err) {
       EasyLoading.dismiss();
-      print(e);
-    }
+      MsgHelper.snackErrorTry(() {
+        createQr();
+      });
+    });
   }
 
   Future<void> getDetailTransaction(id) async {
@@ -65,14 +94,24 @@ class TransactionProvider with ChangeNotifier {
   }
 
   Future<void> cancelTransaction(id) async {
-    try {
-      EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
+    // try {
+    //   EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
 
-      await TransactionService().cancelTransaction(id);
+    //   await TransactionService().cancelTransaction(id);
+    //   EasyLoading.dismiss();
+    // } catch (e) {
+    //   EasyLoading.dismiss();
+    //   print(e);
+    // }
+
+    await TransactionService().cancelTransaction(id).then((value) async {
       EasyLoading.dismiss();
-    } catch (e) {
-      EasyLoading.dismiss();
-      print(e);
-    }
+
+      Get.offAll(const HomePage());
+    }).catchError((err) {
+      MsgHelper.snackErrorTry(() {
+        cancelTransaction(id);
+      });
+    });
   }
 }

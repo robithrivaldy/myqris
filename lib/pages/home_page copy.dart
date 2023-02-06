@@ -2035,7 +2035,7 @@
 //               const SizedBox(
 //                 height: 12,
 //               ),
-//               const HistoryCard(
+//               const TransactionCard(
 //                 id: "1",
 //                 wallet: "OVO",
 //                 image: "assets/ovo.png",
@@ -2043,7 +2043,7 @@
 //                 price: "Rp 104.000",
 //                 status: "Diterima",
 //               ),
-//               // const HistoryCard(
+//               // const TransactionCard(
 //               //   id: "2",
 //               //   wallet: "BCA",
 //               //   image: "assets/bca.png",
@@ -2051,7 +2051,7 @@
 //               //   price: "Rp 104.000",
 //               //   status: "Belum Dibayar",
 //               // ),
-//               // const HistoryCard(
+//               // const TransactionCard(
 //               //   id: "3",
 //               //   wallet: "Gopay",
 //               //   image: "assets/gopay.png",

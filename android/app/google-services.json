@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1016045426707-4pc9tfhmdutd9fs3o8j3u7ok8of3dhcc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.myqris.myqrisapp",
+            "certificate_hash": "8568507cb26be442691afd0220bcb56b9d302eec"
+          }
+        },
+        {
           "client_id": "1016045426707-raeiejijcsiitmkd0d73ct9h92firprs.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

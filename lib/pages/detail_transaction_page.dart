@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -5,10 +7,11 @@ import 'package:myqris/main.dart';
 import 'package:myqris/models/transactions_model.dart';
 import 'package:myqris/providers/transaction_provider.dart';
 import 'package:myqris/utils/constants.dart';
-import 'package:myqris/widgets/history_card.dart';
+import 'package:myqris/widgets/transaction_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'package:myqris/widgets/transaction_detail_card.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -26,6 +29,7 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
+
       if (notification != null && android != null && !kIsWeb) {
         flutterLocalNotificationsPlugin!.show(
           notification.hashCode,
@@ -37,7 +41,7 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
               channel!.name,
               // TODO add a proper drawable resource to android, for now using
               //      one that already exists in example app.
-              icon: '@mipmap/ic_launcher',
+              // icon: '@mipmap/launcher_icon',
               // color: Colors.yellow,
               playSound: true,
               importance: Importance.high,
@@ -74,9 +78,13 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
   Widget build(BuildContext context) {
     TransactionProvider transactionProvider =
         Provider.of<TransactionProvider>(context);
-    final dateTime = DateTime.parse(widget.data.createdAt!);
-    final format = DateFormat('dd MMMM yyyy HH:mm');
-    var tanggal = format.format(dateTime);
+    // final dateTime = DateTime.parse(widget.data.createdAt!);
+    // final format = DateFormat('dd MMMM yyyy HH:mm');
+    // var tanggal = format.format(dateTime);
+
+    var tanggal = widget.data.createdAt!;
+
+    var expiredDate = widget.data.expiredAt;
 
     return Scaffold(
       backgroundColor: const Color(0xffFFFFFF),
@@ -129,7 +137,7 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
                         height: 8,
                       ),
                       Text(
-                        'Uang berhasil Succeed',
+                        'Uang berhasil diterima',
                         style: nunitoTextStyle.copyWith(
                           color: whiteColor,
                           fontSize: 14,
@@ -255,15 +263,15 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
                                       fontWeight: FontWeight.w400,
                                     ),
                                   ),
-                                  const SizedBox(width: 4),
-                                  IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(
-                                      Icons.help_rounded,
-                                      size: 20,
-                                      color: const Color(0xffD1D5DB),
-                                    ),
-                                  ),
+                                  // const SizedBox(width: 4),
+                                  // IconButton(
+                                  //   onPressed: () {},
+                                  //   icon: Icon(
+                                  //     Icons.help_rounded,
+                                  //     size: 20,
+                                  //     color: const Color(0xffD1D5DB),
+                                  //   ),
+                                  // ),
                                 ],
                               )),
                               Expanded(
@@ -290,7 +298,7 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
                                   child: Row(
                                 children: [
                                   Text(
-                                    'Total Tagihan',
+                                    'Total Pendapatan',
                                     style: nunitoTextStyle.copyWith(
                                       color: const Color(0xff6B7280),
                                       fontSize: 14,
@@ -305,8 +313,7 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
                                           locale: 'id',
                                           symbol: 'Rp ',
                                           decimalDigits: 0)
-                                      .format(widget.data.fee! +
-                                          widget.data.amount!),
+                                      .format(widget.data.totalRevenue),
                                   style: nunitoTextStyle.copyWith(
                                     color: blackColor,
                                     fontSize: 16,
@@ -334,12 +341,12 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
                   widget.data.status == 'WaitingPayment'
                       ? Column(
                           children: [
-                            HistoryCard(widget.data),
+                            TransactionDetailCard(widget.data),
                             const SizedBox(
                               height: 22,
                             ),
                             Text(
-                              'Tunjukkan QR ke Customer',
+                              'Tunjukan QR ke Customer',
                               style: nunitoTextStyle.copyWith(
                                 color: blackColor,
                                 fontSize: 20,
@@ -357,10 +364,10 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
-                                'Expired in 58 : 00 : 11',
+                                'Expired pada ${expiredDate}',
                                 style: nunitoTextStyle.copyWith(
                                   color: blackColor,
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -382,7 +389,7 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
                                 text: TextSpan(
                                   children: <TextSpan>[
                                     TextSpan(
-                                      text: "QR Generate By  ",
+                                      text: "QR Generated By  ",
                                       style: nunitoTextStyle.copyWith(
                                         color: blackColor,
                                         fontSize: 14,
@@ -417,7 +424,7 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
                   widget.data.status == 'Cancelled'
                       ? Column(
                           children: [
-                            HistoryCard(widget.data),
+                            TransactionDetailCard(widget.data),
                             const SizedBox(
                               height: 32,
                             ),
@@ -446,6 +453,38 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
                           ],
                         )
                       : const SizedBox(),
+                  widget.data.status == 'Expired'
+                      ? Column(
+                          children: [
+                            TransactionDetailCard(widget.data),
+                            const SizedBox(
+                              height: 32,
+                            ),
+                            Text(
+                              'Transaksi Expired ⛔️',
+                              style: nunitoTextStyle.copyWith(
+                                color: blackColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            Text(
+                              'Pembayaran gagal dan uang tidak diterima',
+                              style: nunitoTextStyle.copyWith(
+                                color: const Color(0xFF6B7280),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 300,
+                            ),
+                          ],
+                        )
+                      : const SizedBox(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -460,14 +499,14 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.help_rounded,
-                                size: 20,
-                                color: const Color(0xffD1D5DB),
-                              ),
-                            ),
+                            // IconButton(
+                            //   onPressed: () {},
+                            //   icon: Icon(
+                            //     Icons.help_rounded,
+                            //     size: 20,
+                            //     color: const Color(0xffD1D5DB),
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),
@@ -493,7 +532,7 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
                           child: Row(
                         children: [
                           Text(
-                            'Total Tagihan',
+                            'Total Pendapatan',
                             style: nunitoTextStyle.copyWith(
                               color: const Color(0xff6B7280),
                               fontSize: 14,
@@ -506,7 +545,7 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
                         child: Text(
                           NumberFormat.currency(
                                   locale: 'id', symbol: 'Rp ', decimalDigits: 0)
-                              .format(widget.data.fee! + widget.data.amount!),
+                              .format(widget.data.totalRevenue),
                           style: nunitoTextStyle.copyWith(
                             color: blackColor,
                             fontSize: 16,
@@ -606,7 +645,9 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
                                           hoverElevation: 0,
                                           focusElevation: 0,
                                           highlightElevation: 0,
-                                          onPressed: () async {},
+                                          onPressed: () async {
+                                            Navigator.pop(context);
+                                          },
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(14),
@@ -641,27 +682,7 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
                                           onPressed: () async {
                                             await transactionProvider
                                                 .cancelTransaction(
-                                                    widget.data.id)
-                                                .then((value) async {
-                                              await transactionProvider
-                                                  .getDetailTransaction(
-                                                      widget.data.id)
-                                                  .then((value) async {
-                                                await Future.delayed(
-                                                        Duration(seconds: 1))
-                                                    .then((value) async {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          DetailTransactionPage(
-                                                              transactionProvider
-                                                                  .transactionDetail),
-                                                    ),
-                                                  );
-                                                });
-                                              });
-                                            });
+                                                    widget.data.id);
                                           },
                                           shape: RoundedRectangleBorder(
                                             borderRadius:

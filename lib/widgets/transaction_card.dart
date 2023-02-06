@@ -5,19 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 
-class HistoryCard extends StatelessWidget {
+class TransactionCard extends StatelessWidget {
   final TransactionsModel data;
-  const HistoryCard(this.data, {Key? key}) : super(key: key);
+  const TransactionCard(this.data, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Color colorBadge = Colors.black;
     Color textBadge = Colors.black;
     var statusTxt = '';
-    final dateTime = DateTime.parse(data.createdAt!);
-    final format = DateFormat('dd MMMM yyyy HH:mm');
-    var tanggal = format.format(dateTime);
-
+    // final dateTime = DateTime.parse(data.createdAt!);
+    // final format = DateFormat('dd MMMM yyyy HH:mm');
+    // var tanggal = format.format(dateTime);
+    var tanggal = data.createdAt!;
     if (data.status == 'Succeed') {
       colorBadge = const Color(0xFFE4F6DE);
       textBadge = greenColor;
@@ -28,6 +28,12 @@ class HistoryCard extends StatelessWidget {
       colorBadge = const Color(0xFFFFF3DB);
       textBadge = yellowColor;
       statusTxt = 'Belum Dibayar';
+    }
+
+    if (data.status == 'Expired') {
+      colorBadge = const Color(0xFFF5D5D6);
+      textBadge = redColor;
+      statusTxt = 'Expired';
     }
 
     if (data.status == 'Cancelled') {
@@ -54,10 +60,10 @@ class HistoryCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
-                color: greyColor.withOpacity(0.2),
+                color: greyColor.withOpacity(0.1),
                 spreadRadius: 3,
                 blurRadius: 6,
-                offset: const Offset(1, 3) // changes position of shadow
+                offset: const Offset(2, 5) // changes position of shadow
                 ),
           ],
         ),

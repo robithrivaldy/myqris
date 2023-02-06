@@ -27,14 +27,15 @@ class TransactionService {
     );
 
     print(response.body);
-    if (response.statusCode == 201) {
-      var data = jsonDecode(response.body)['data'];
+    // if (response.statusCode == 201) {
+    //   var data = jsonDecode(response.body)['data'];
 
-      TransactionsModel main = TransactionsModel.fromJson(data);
-      return main;
-    } else {
-      throw Exception('Gagal');
-    }
+    //   TransactionsModel main = TransactionsModel.fromJson(data);
+    //   return main;
+    // } else {
+    //   throw Exception('Gagal');
+    // }
+    return TransactionsModel.fromJson(jsonDecode(response.body)['data']);
   }
 
   Future<TransactionsModel> getDetailTransaction(id) async {

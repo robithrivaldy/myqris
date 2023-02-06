@@ -1,6 +1,9 @@
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:myqris/pages/detail_transaction_page.dart';
+import 'package:myqris/providers/main_provider.dart';
 import 'package:myqris/providers/transaction_provider.dart';
 import 'package:myqris/services/transaction_service.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +19,16 @@ class BuatQrSheet extends StatefulWidget {
 
 class _BuatQrSheetState extends State<BuatQrSheet> {
   bool showButton = true;
+  bool alertNominal = false;
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    // Provider.of<TransactionProvider>(context, listen: false)
+    //     .nominalQrController
+    //     .dispose();
+    super.dispose();
+  }
 
   Widget boxContainer(i) {
     TransactionProvider transactionProvider =
@@ -23,22 +36,12 @@ class _BuatQrSheetState extends State<BuatQrSheet> {
 
     return InkWell(
       onTap: () {
-        // String price;
-        // var textController = transactionProvider.nominalQrController.text + i;
-        // price =
-        //     '${transactionProvider.formatNumber(textController.replaceAll(',', ''))}';
-        // transactionProvider.nominalQrController.value = TextEditingValue(
-        //   text: price,
-        //   selection: TextSelection.collapsed(offset: price.length),
-        // );
-        transactionProvider.nominalQrController.text =
-            transactionProvider.nominalQrController.text + i;
-        // var string = transactionProvider.nominalQrController.text + i;
-        // string = transactionProvider.formatNumber(string.replaceAll(',', ''));
-        // transactionProvider.nominalQrController.value = TextEditingValue(
-        //   text: string,
-        //   selection: TextSelection.collapsed(offset: string.length),
-        // );
+        var string = transactionProvider.nominalQrController.text + i;
+        string = transactionProvider.formatNumber(string.replaceAll('.', ''));
+        transactionProvider.nominalQrController.value = TextEditingValue(
+          text: string,
+          selection: TextSelection.collapsed(offset: string.length),
+        );
       },
       splashColor: greyColor,
       child: Container(
@@ -59,7 +62,7 @@ class _BuatQrSheetState extends State<BuatQrSheet> {
           ],
         ),
         child: Text(
-          i,
+          i.toString(),
           style: robotoTextStyle.copyWith(
             fontSize: 30,
             fontWeight: FontWeight.w400,
@@ -75,9 +78,21 @@ class _BuatQrSheetState extends State<BuatQrSheet> {
         Provider.of<TransactionProvider>(context);
     return InkWell(
       onTap: () {
+        // String str = transactionProvider.nominalQrController.text;
+        // transactionProvider.nominalQrController.text =
+        //     str.substring(0, str.length - 1);
         String str = transactionProvider.nominalQrController.text;
-        transactionProvider.nominalQrController.text =
-            str.substring(0, str.length - 1);
+
+        if (str.length == 1) {
+          transactionProvider.nominalQrController.text = "";
+        } else {
+          var string = str.substring(0, str.length - 1);
+          string = transactionProvider.formatNumber(string.replaceAll('.', ''));
+          transactionProvider.nominalQrController.value = TextEditingValue(
+            text: string,
+            selection: TextSelection.collapsed(offset: string.length),
+          );
+        }
       },
       splashColor: greyColor,
       child: Container(
@@ -129,14 +144,27 @@ class _BuatQrSheetState extends State<BuatQrSheet> {
 
   @override
   Widget build(BuildContext context) {
-    // if (WidgetsBinding.instance!.window.viewInsets.bottom > 0.0) {
-    //   showButton = false;
-    // } else {
-    //   showButton = true;
-    // }
-
     TransactionProvider transactionProvider =
         Provider.of<TransactionProvider>(context);
+
+    MainProvider mainProvider = Provider.of<MainProvider>(context);
+
+    void buatQRHandle() async {
+      var price =
+          transactionProvider.nominalQrController.text.replaceAll('.', '');
+      var intPrice = int.parse(price).toInt();
+      if (intPrice > 999) {
+        await transactionProvider.createQr();
+      } else if (transactionProvider.nominalQrController.text == "") {
+        setState(() {
+          alertNominal = true;
+        });
+      } else {
+        setState(() {
+          alertNominal = true;
+        });
+      }
+    }
 
     transactionProvider.nominalQrController.text = '';
     return SingleChildScrollView(
@@ -187,9 +215,22 @@ class _BuatQrSheetState extends State<BuatQrSheet> {
                 readOnly: true,
                 keyboardType: TextInputType.number,
                 controller: transactionProvider.nominalQrController,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
+                onChanged: (string) {
+                  string = transactionProvider
+                      .formatNumber(string.replaceAll(',', ''));
+                  transactionProvider.nominalQrController.value =
+                      TextEditingValue(
+                    text: string,
+                    selection: TextSelection.collapsed(offset: string.length),
+                  );
+                },
+                // inputFormatters: [
+                //   FilteringTextInputFormatter.digitsOnly,
+                //   CurrencyTextInputFormatter(
+                //     decimalDigits: 0,
+                //     locale: 'id',
+                //   )
+                // ],
                 textInputAction: TextInputAction.done,
                 style: nunitoTextStyle.copyWith(
                   color: blackColor,
@@ -197,7 +238,26 @@ class _BuatQrSheetState extends State<BuatQrSheet> {
                   fontWeight: FontWeight.w700,
                 ),
                 decoration: InputDecoration(
-                  prefixText: transactionProvider.currency + ' ',
+                  // prefixText: transactionProvider.currency + ' ',
+                  // prefixText: 'Rp ',
+                  prefixIcon: SizedBox(
+                    child: Center(
+                      widthFactor: 0.0,
+                      child: Text(
+                        'Rp',
+                        style: nunitoTextStyle.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                  prefixStyle: nunitoTextStyle.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                    fontSize: 16,
+                  ),
                   contentPadding:
                       const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
                   isDense: true,
@@ -221,6 +281,24 @@ class _BuatQrSheetState extends State<BuatQrSheet> {
               ),
             ),
           ),
+          alertNominal
+              ? Column(
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      'Minimal Nominal Rp 1.000',
+                      style: nunitoTextStyle.copyWith(
+                        color: const Color(0xffFF314A),
+                        fontWeight: FontWeight.w400,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                )
+              : const SizedBox(),
+
           const SizedBox(
             height: 20,
           ),
@@ -273,33 +351,7 @@ class _BuatQrSheetState extends State<BuatQrSheet> {
               focusElevation: 0,
               highlightElevation: 0,
               onPressed: () async {
-                await transactionProvider.createQr().then((value) async {
-                  await Future.delayed(Duration(seconds: 1))
-                      .then((value) async {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailTransactionPage(
-                            transactionProvider.transaction),
-                      ),
-                    );
-                  });
-                });
-
-                // Navigator.pop(context);
-                // showModalBottomSheet<void>(
-                //   isScrollControlled: true,
-                //   context: context,
-                //   barrierColor: Colors.black.withOpacity(0.5),
-                //   shape: RoundedRectangleBorder(
-                //     borderRadius: BorderRadius.only(
-                //         topLeft: Radius.circular(14.0),
-                //         topRight: Radius.circular(14.0)),
-                //   ),
-                //   builder: (BuildContext context) {
-                //     return Container();
-                //   },
-                // );
+                buatQRHandle();
               },
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),

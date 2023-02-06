@@ -1,12 +1,19 @@
+import 'dart:async';
+import 'package:flutter/gestures.dart';
+import 'package:http/http.dart';
 import 'package:myqris/api/google_api.dart';
+import 'package:myqris/helpers/msg_helper.dart';
 import 'package:myqris/pages/home_page.dart';
 import 'package:myqris/providers/auth_provider.dart';
+import 'package:myqris/providers/main_provider.dart';
+import 'package:myqris/providers/withdraw_provider.dart';
 import 'package:myqris/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -16,12 +23,35 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  SharedPreferences? _sharedPrefs;
-  GoogleSignInAccount? _currentUser;
+  // SharedPreferences? _sharedPrefs;
+  // GoogleSignInAccount? _currentUser;
+  late StreamSubscription subscription;
+  bool isDeviceConnected = false;
+  bool isAlertSet = false;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  getdata() async {
+    await Provider.of<AuthProvider>(context, listen: false).getSession();
+
+    await Future.delayed(Duration(seconds: 1)).then((value) async {
+      await Provider.of<MainProvider>(context, listen: false).getMain();
+      await Provider.of<WithdrawProvider>(context, listen: false).getWithdraw();
+    });
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    loginHandle() async {
+      await GoogleApi.login().then((value) async {
+        await authProvider.login(email: value!.email, name: value.displayName!);
+      });
+    }
+
     return Scaffold(
       backgroundColor: bgColor,
       body: SafeArea(
@@ -92,10 +122,15 @@ class _LoginPageState extends State<LoginPage> {
                                     nunitoTextStyle.copyWith(color: greyColor),
                               ),
                               TextSpan(
-                                text: "Syarat dan Ketentuan ",
+                                text: " Syarat dan Ketentuan ",
                                 style: nunitoTextStyle.copyWith(
-                                    color: blueColor,
-                                    fontWeight: FontWeight.w400),
+                                  color: blueColor,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                                recognizer: new TapGestureRecognizer()
+                                  ..onTap = () {
+                                    launch('https://policies.google.com/terms');
+                                  },
                               ),
                               TextSpan(
                                 text: "dan",
@@ -103,10 +138,15 @@ class _LoginPageState extends State<LoginPage> {
                                     nunitoTextStyle.copyWith(color: greyColor),
                               ),
                               TextSpan(
-                                text: "Kebijakan Privasi ",
+                                text: " Kebijakan Privasi ",
                                 style: nunitoTextStyle.copyWith(
-                                    color: blueColor,
-                                    fontWeight: FontWeight.w400),
+                                  color: blueColor,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                                recognizer: new TapGestureRecognizer()
+                                  ..onTap = () {
+                                    launch('https://policies.google.com/terms');
+                                  },
                               ),
                             ],
                           ),
@@ -131,54 +171,7 @@ class _LoginPageState extends State<LoginPage> {
                   focusElevation: 0,
                   highlightElevation: 0,
                   onPressed: () async {
-                    EasyLoading.show(
-                        dismissOnTap: false, status: 'Mohon Tunggu');
-                    try {
-                      var google = await GoogleApi.login();
-
-                      await authProvider
-                          .login(
-                              email: google!.email, name: google.displayName!)
-                          .then((value) => Navigator.pushNamedAndRemoveUntil(
-                              context, '/home', (route) => false));
-                    } catch (e) {
-                      print(e);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          backgroundColor: redColor,
-                          content: const Text(
-                            'Gagal Masuk, Mohon Ulangi kembali!',
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      );
-                    }
-                    EasyLoading.dismiss();
-
-                    // try {
-                    // GoogleSignInAccount? user = await GoogleApi.login();
-
-                    // GoogleSignInAuthentication googleSignInAuthentication =
-                    //     await user!.authentication;
-
-                    // print(googleSignInAuthentication.accessToken);
-
-                    //   GoogleSignInAccount? user = await GoogleApi.logout();
-                    //   GoogleSignInAuthentication googleSignInAuthentication =
-                    //       await user!.authentication;
-                    //   print(googleSignInAuthentication.accessToken);
-
-                    //   authProvider.login(email: googleSignInAuthentication., name: name)
-                    // } catch (error) {
-                    //   print(error);
-                    // }
-
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => HomePage(),
-                    //   ),
-                    // );
+                    loginHandle();
                   },
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
