@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 
 class TarikSaldoNewSheet extends StatefulWidget {
   final ProfileModel data;
-  TarikSaldoNewSheet(this.data, {Key? key}) : super(key: key);
+  const TarikSaldoNewSheet(this.data, {Key? key}) : super(key: key);
 
   @override
   State<TarikSaldoNewSheet> createState() => _TarikSaldoNewSheetState();
@@ -33,33 +33,30 @@ class _TarikSaldoNewSheetState extends State<TarikSaldoNewSheet> {
   getData() async {
     await Provider.of<WithdrawProvider>(context, listen: false).getBank();
 
-    Provider.of<WithdrawProvider>(context, listen: false).bankCode =
-        widget.data.bankCode!;
-    Provider.of<WithdrawProvider>(context, listen: false)
-        .accountHolderController
-        .text = widget.data.beneficiaryAccountHolder!;
-    Provider.of<WithdrawProvider>(context, listen: false)
-        .accountNumberController
-        .text = widget.data.beneficiaryAccountNumber!;
+    if (widget.data.bankCode == "") {
+      Provider.of<WithdrawProvider>(context, listen: false).bankCode =
+          "Pilih Bank";
+    } else {
+      Provider.of<WithdrawProvider>(context, listen: false).bankCode =
+          widget.data.bankCode!;
+    }
+
+    if (widget.data.saldo! < 100000) {
+      Provider.of<WithdrawProvider>(context, listen: false).validator = false;
+    } else {
+      Provider.of<WithdrawProvider>(context, listen: false).validator = true;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
     WithdrawProvider withdrawProvider = Provider.of<WithdrawProvider>(context);
-
-    if (authProvider.profile.saldo! < 100000) {
-      withdrawProvider.validator = false;
-    } else {
-      withdrawProvider.validator = true;
-    }
-
     if (WidgetsBinding.instance!.window.viewInsets.bottom > 0.0) {
       showButton = false;
     } else {
       showButton = true;
     }
-
     return SingleChildScrollView(
       padding: EdgeInsets.only(
           top: 24,

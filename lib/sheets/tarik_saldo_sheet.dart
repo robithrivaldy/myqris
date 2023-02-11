@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'package:myqris/models/profile_model.dart';
 import 'package:myqris/providers/auth_provider.dart';
 import 'package:myqris/providers/withdraw_provider.dart';
 import 'package:myqris/sheets/bank_sheet.dart';
@@ -12,8 +13,8 @@ import 'package:myqris/widgets/bank_card.dart';
 import 'package:provider/provider.dart';
 
 class TarikSaldoSheet extends StatefulWidget {
-  TarikSaldoSheet({Key? key}) : super(key: key);
-
+  final ProfileModel data;
+  const TarikSaldoSheet(this.data, {Key? key}) : super(key: key);
   @override
   State<TarikSaldoSheet> createState() => _TarikSaldoSheetState();
 }
@@ -30,36 +31,38 @@ class _TarikSaldoSheetState extends State<TarikSaldoSheet> {
 
   getData() async {
     await Provider.of<WithdrawProvider>(context, listen: false).getBank();
+
+    if (widget.data.saldo! < 100000) {
+      Provider.of<WithdrawProvider>(context, listen: false).validator = false;
+    } else {
+      Provider.of<WithdrawProvider>(context, listen: false).validator = true;
+    }
+
+    if (widget.data.bankCode == "") {
+      Provider.of<WithdrawProvider>(context, listen: false).showBank = false;
+    } else {
+      Provider.of<WithdrawProvider>(context, listen: false).bankCode =
+          widget.data.bankCode!;
+      Provider.of<WithdrawProvider>(context, listen: false)
+          .accountHolderController
+          .text = widget.data.beneficiaryAccountHolder!;
+      Provider.of<WithdrawProvider>(context, listen: false)
+          .accountNumberController
+          .text = widget.data.beneficiaryAccountNumber!;
+
+      Provider.of<WithdrawProvider>(context, listen: false).showBank = true;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
     WithdrawProvider withdrawProvider = Provider.of<WithdrawProvider>(context);
-
-    if (authProvider.profile.saldo! < 100000) {
-      withdrawProvider.validator = false;
-    } else {
-      withdrawProvider.validator = true;
-    }
-    if (authProvider.profile.bankCode == "") {
-      withdrawProvider.showBank = false;
-    } else {
-      withdrawProvider.bankCode = authProvider.profile.bankCode!;
-      withdrawProvider.accountHolderController.text =
-          authProvider.profile.beneficiaryAccountHolder!;
-      withdrawProvider.accountNumberController.text =
-          authProvider.profile.beneficiaryAccountNumber!;
-
-      withdrawProvider.showBank = true;
-    }
-
     if (WidgetsBinding.instance!.window.viewInsets.bottom > 0.0) {
       showButton = false;
     } else {
       showButton = true;
     }
-
     return SingleChildScrollView(
       padding: EdgeInsets.only(
           top: 24,

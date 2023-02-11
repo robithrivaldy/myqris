@@ -24,50 +24,16 @@ import 'dart:convert';
 class AuthProvider with ChangeNotifier {
   SharedPreferences? _sharedPrefs;
 
-  static void snackErrorTry(VoidCallback onPress, [String? promp]) {
-    Get.snackbar('', '',
-        duration: Duration(seconds: 5),
-        mainButton: TextButton.icon(
-            label: Text(
-              'Coba lagi',
-              style: GoogleFonts.poppins(color: Colors.green),
-            ),
-            icon: Icon(Icons.refresh, color: Colors.green),
-            onPressed: onPress),
-        snackStyle: SnackStyle.FLOATING,
-        snackPosition: SnackPosition.BOTTOM,
-        isDismissible: false,
-        backgroundColor: Colors.black87,
-        barBlur: 40.0,
-        titleText: Text(
-          'Error',
-          style: GoogleFonts.poppins(
-              color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        messageText: Text(
-          promp == null ? 'Terjadi Kesalahan' : promp,
-          style: GoogleFonts.poppins(color: Colors.white),
-        ));
-  }
-
   Future<void> getSession() async {
     _sharedPrefs = await SharedPreferences.getInstance();
     print(_sharedPrefs?.getString('token'));
-    // print(_sharedPrefs?.getInt('id'));
-
-    // print(_sharedPrefs?.getString('name'));
-    // print(_sharedPrefs?.getString('email'));
 
     // _sharedPrefs!.clear();
   }
 
   int? get getId => _sharedPrefs?.getInt('id');
   String? get getToken => _sharedPrefs?.getString('token');
-  // String? get getName => _sharedPrefs?.getString('name');
-  // String? get getEmail => _sharedPrefs?.getString('email');
 
-  // String? get getPhone => _sharedPrefs?.getString('phone');
-  // int? get getSaldo => _sharedPrefs?.getInt('saldo');
   AuthModel? _user;
   AuthModel get user => _user!;
 

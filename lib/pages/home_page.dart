@@ -235,7 +235,7 @@ class _HomePageState extends State<HomePage>
                 backgroundColor: Colors.white,
                 builder: (BuildContext context) {
                   return StatefulBuilder(builder: (context, setNewState) {
-                    return TarikSaldoSheet();
+                    return TarikSaldoSheet(authProvider.profile);
                   });
                 });
           }

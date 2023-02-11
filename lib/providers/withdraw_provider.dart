@@ -12,7 +12,7 @@ class WithdrawProvider with ChangeNotifier {
   final accountNumberController = TextEditingController();
   final accountHolderController = TextEditingController();
 
-  String? _bankCode = 'Pilih Bank';
+  String? _bankCode = '';
   String? _beneficiaryAccountNumber;
   String? _beneficiaryAccountHolder;
 

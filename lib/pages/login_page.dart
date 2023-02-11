@@ -53,6 +53,7 @@ class _LoginPageState extends State<LoginPage> {
         await authProvider.login(email: value!.email, name: value.displayName!);
         EasyLoading.dismiss();
       }).catchError((err) {
+        print(err);
         EasyLoading.dismiss();
       });
     }

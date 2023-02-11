@@ -47,9 +47,7 @@ class _TarikSaldoConfirmSheetState extends State<TarikSaldoConfirmSheet> {
         );
       }).catchError((err) {
         EasyLoading.dismiss();
-        // MsgHelper.snackErrorTry(() {
-        //   confirmHandle();
-        // });
+
         MsgHelper.msgPeringatan("Penarikan saldo sedang diproses");
       });
     }
