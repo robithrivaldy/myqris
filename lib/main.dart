@@ -9,8 +9,7 @@ import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:myqris/pages/home_page.dart';
 import 'package:myqris/pages/login_page.dart';
-import 'package:myqris/pages/no_internet_page.dart';
-import 'package:myqris/pages/profile_page.dart';
+
 import 'package:myqris/pages/splash_page.dart';
 import 'package:myqris/providers/auth_provider.dart';
 import 'package:myqris/providers/main_provider.dart';
@@ -100,10 +99,6 @@ class MyApp extends StatelessWidget {
           '/': (context) => const SplashPage(),
           '/login': (context) => const LoginPage(),
           '/home': (context) => HomePage(),
-
-          // '/profile': (context) => ProfilePage(),
-
-          '/error': (context) => NoInternetPage(),
         },
       ),
     );

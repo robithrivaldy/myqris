@@ -1,11 +1,15 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:myqris/helpers/msg_helper.dart';
 import 'package:myqris/pages/detail_transaction_page.dart';
 import 'package:myqris/providers/main_provider.dart';
 import 'package:myqris/providers/transaction_provider.dart';
 import 'package:myqris/services/transaction_service.dart';
+import 'package:myqris/sheets/notice_sheet.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/constants.dart';
@@ -20,6 +24,7 @@ class BuatQrSheet extends StatefulWidget {
 class _BuatQrSheetState extends State<BuatQrSheet> {
   bool showButton = true;
   bool alertNominal = false;
+  var alertTxt = "";
 
   @override
   void dispose() {
@@ -153,14 +158,62 @@ class _BuatQrSheetState extends State<BuatQrSheet> {
       var price =
           transactionProvider.nominalQrController.text.replaceAll('.', '');
       var intPrice = int.parse(price).toInt();
-      if (intPrice > 999) {
-        await transactionProvider.createQr();
+      if (intPrice > 500000) {
+        setState(() {
+          alertTxt = "Maksimal nominal Rp 500.000";
+          alertNominal = true;
+        });
       } else if (transactionProvider.nominalQrController.text == "") {
         setState(() {
+          alertTxt = "Minimal Nominal Rp 1.000";
           alertNominal = true;
+        });
+      } else if ((intPrice > 999) && (intPrice <= 500000)) {
+        EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
+
+        await TransactionService()
+            .createQr(transactionProvider.nominalQrController.text
+                .replaceAll('.', ''))
+            .then((value) {
+          transactionProvider.transaction = value;
+          EasyLoading.dismiss();
+          Get.offAll(
+            DetailTransactionPage(value),
+          );
+        }).catchError((err) async {
+          await TransactionService()
+              .checkLimitTransaction(transactionProvider
+                  .nominalQrController.text
+                  .replaceAll('.', ''))
+              .then((value) {
+            EasyLoading.dismiss();
+            Navigator.pop(context);
+            showModalBottomSheet<void>(
+                context: context,
+                isScrollControlled: true,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(14),
+                    topRight: Radius.circular(14),
+                  ),
+                ),
+                backgroundColor: Colors.white,
+                builder: (BuildContext context) {
+                  return StatefulBuilder(builder: (context, setNewState) {
+                    return NoticeSheet(value.errors!, value.message!);
+                  });
+                });
+          }).catchError((err) {
+            EasyLoading.dismiss();
+
+            MsgHelper.snackErrorTry(() {
+              buatQRHandle();
+            });
+          });
         });
       } else {
         setState(() {
+          alertTxt = "Minimal Nominal Rp 1.000";
           alertNominal = true;
         });
       }
@@ -288,7 +341,7 @@ class _BuatQrSheetState extends State<BuatQrSheet> {
                       height: 20,
                     ),
                     Text(
-                      'Minimal Nominal Rp 1.000',
+                      alertTxt,
                       style: nunitoTextStyle.copyWith(
                         color: const Color(0xffFF314A),
                         fontWeight: FontWeight.w400,

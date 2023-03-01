@@ -3,11 +3,13 @@ class TransactionsModel {
   String? referenceNumber;
   int? driverId;
   int? amount;
+  int? transactionFee;
   int? fee;
   int? totalRevenue;
   String? status;
   String? qrCode;
   String? paidAt;
+  String? qrCreatedBy;
   String? paidBy;
   String? paidByLogo;
   String? expiredAt;
@@ -19,11 +21,13 @@ class TransactionsModel {
       this.referenceNumber,
       this.driverId,
       this.amount,
+      this.transactionFee,
       this.fee,
       this.totalRevenue,
       this.status,
       this.qrCode,
       this.paidAt,
+      this.qrCreatedBy,
       this.paidBy,
       this.paidByLogo,
       this.expiredAt,
@@ -35,11 +39,13 @@ class TransactionsModel {
     referenceNumber = json['reference_number'] ?? '';
     driverId = json['driver_id'] ?? 0;
     amount = json['amount'] ?? 0;
+    transactionFee = json['transaction_fee'] ?? 0;
     fee = json['fee'] ?? 0;
     totalRevenue = json['total_revenue'] ?? 0;
     status = json['status'];
     qrCode = json['qr_code'] ?? '';
     paidAt = json['paid_at'] ?? '';
+    qrCreatedBy = json['qr_created_by'] ?? '';
     paidBy = json['paid_by'] ?? '';
     paidByLogo = json['paid_by_logo'] ?? '';
     expiredAt = json['expired_at'] ?? '';
@@ -53,11 +59,13 @@ class TransactionsModel {
     data['reference_number'] = this.referenceNumber;
     data['driver_id'] = this.driverId;
     data['amount'] = this.amount;
+    data['transaction_fee'] = this.transactionFee;
     data['fee'] = this.fee;
     data['totalRevenue'] = this.totalRevenue;
     data['status'] = this.status;
     data['qr_code'] = this.qrCode;
     data['paid_at'] = this.paidAt;
+    data['qr_created_by'] = this.qrCreatedBy;
     data['paid_by'] = this.paidBy;
     data['paid_by_logo'] = this.paidByLogo;
     data['expired_at'] = this.expiredAt;

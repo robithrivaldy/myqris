@@ -1,21 +1,13 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:ffi';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:myqris/api/google_api.dart';
 import 'package:myqris/helpers/msg_helper.dart';
 import 'package:myqris/main.dart';
-import 'package:myqris/models/transactions_model.dart';
-import 'package:myqris/pages/home_blank.dart';
+
 import 'package:myqris/pages/profile_page.dart';
 import 'package:myqris/pages/tab/transactions.dart';
 import 'package:myqris/pages/tab/withdraws.dart';
@@ -23,12 +15,13 @@ import 'package:myqris/providers/auth_provider.dart';
 import 'package:myqris/providers/main_provider.dart';
 import 'package:myqris/providers/withdraw_provider.dart';
 import 'package:myqris/services/auth_service.dart';
+import 'package:myqris/services/transaction_service.dart';
 import 'package:myqris/sheets/buat_qr_sheet.dart';
 import 'package:myqris/sheets/tarik_saldo_new_sheet.dart';
 import 'package:myqris/sheets/tarik_saldo_sheet.dart';
 import 'package:myqris/sheets/tarik_saldo_status_sheet.dart';
 import 'package:myqris/sheets/verification_sheet.dart';
-import 'package:myqris/sheets/waiting_verivication_sheet.dart';
+import 'package:myqris/sheets/notice_sheet.dart';
 import 'package:myqris/utils/constants.dart';
 import 'package:myqris/widgets/bank_card.dart';
 import 'package:myqris/widgets/empty_data.dart';
@@ -257,7 +250,8 @@ class _HomePageState extends State<HomePage>
             backgroundColor: Colors.white,
             builder: (BuildContext context) {
               return StatefulBuilder(builder: (context, setNewState) {
-                return WaitingVerivicationSheet();
+                return const NoticeSheet('⏳ Mohon menunggu 2x24 jam',
+                    'Proses verifikasi sebagai syarat untuk tarik saldo memerlukan waktu 2x24 jam');
               });
             });
       } else {
@@ -279,6 +273,44 @@ class _HomePageState extends State<HomePage>
             });
       }
       EasyLoading.dismiss();
+    }
+
+    buatQrHandle() async {
+      EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
+
+      await TransactionService().checkLimitSaldo().then((e) async {
+        EasyLoading.dismiss();
+        showModalBottomSheet<void>(
+            context: context,
+            isScrollControlled: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(14),
+                topRight: Radius.circular(14),
+              ),
+            ),
+            backgroundColor: Colors.white,
+            builder: (BuildContext context) {
+              return StatefulBuilder(builder: (context, setNewState) {
+                return NoticeSheet(e.errors!, e.message!);
+              });
+            });
+      }).catchError((err) {
+        // JIKA ERROR MAKA SUKSES, KARENA DATA NYA NULL TIDAK ADA PESAN ERROR DARI API!
+        EasyLoading.dismiss();
+        showModalBottomSheet<void>(
+            isScrollControlled: true,
+            context: context,
+            barrierColor: Colors.black.withOpacity(0.5),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(14.0),
+                  topRight: Radius.circular(14.0)),
+            ),
+            builder: (BuildContext context) {
+              return BuatQrSheet();
+            });
+      });
     }
 
     return Scaffold(
@@ -515,21 +547,7 @@ class _HomePageState extends State<HomePage>
                                     Expanded(
                                       child: InkWell(
                                         splashColor: greyColor,
-                                        onTap: () => showModalBottomSheet<void>(
-                                          isScrollControlled: true,
-                                          context: context,
-                                          barrierColor:
-                                              Colors.black.withOpacity(0.5),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(14.0),
-                                                topRight:
-                                                    Radius.circular(14.0)),
-                                          ),
-                                          builder: (BuildContext context) {
-                                            return BuatQrSheet();
-                                          },
-                                        ),
+                                        onTap: () => buatQrHandle(),
                                         child: Row(
                                           children: [
                                             Icon(

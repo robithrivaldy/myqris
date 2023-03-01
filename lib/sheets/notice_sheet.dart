@@ -6,18 +6,16 @@ import 'package:myqris/utils/constants.dart';
 import 'package:myqris/widgets/withdraw_card.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class WaitingVerivicationSheet extends StatefulWidget {
-  const WaitingVerivicationSheet({Key? key}) : super(key: key);
+class NoticeSheet extends StatefulWidget {
+  final String title;
+  final String message;
+  const NoticeSheet(this.title, this.message, {Key? key}) : super(key: key);
 
   @override
-  State<WaitingVerivicationSheet> createState() =>
-      _WaitingVerivicationSheetState();
+  State<NoticeSheet> createState() => _NoticeSheetState();
 }
 
-class _WaitingVerivicationSheetState extends State<WaitingVerivicationSheet> {
-  var title = '⏳ Mohon menunggu 2x24 jam';
-  var message =
-      'Proses verifikasi sebagai syarat untuk tarik saldo memerlukan waktu 2x24 jam';
+class _NoticeSheetState extends State<NoticeSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -29,7 +27,7 @@ class _WaitingVerivicationSheetState extends State<WaitingVerivicationSheet> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  title,
+                  widget.title,
                   style: nunitoTextStyle.copyWith(
                     color: blackColor,
                     fontSize: 18,
@@ -56,7 +54,7 @@ class _WaitingVerivicationSheetState extends State<WaitingVerivicationSheet> {
               children: [
                 Expanded(
                   child: Text(
-                    message,
+                    widget.message,
                     style: nunitoTextStyle.copyWith(
                       color: const Color(0xff545454),
                       fontSize: 14,

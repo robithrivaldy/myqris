@@ -85,6 +85,8 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
     var tanggal = widget.data.createdAt!;
 
     var expiredDate = widget.data.expiredAt;
+    var regExp = RegExp(" ");
+    var countSpace = regExp.allMatches(widget.data.paidByLogo!).length;
 
     return Scaffold(
       backgroundColor: const Color(0xffFFFFFF),
@@ -163,11 +165,17 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
                         children: [
                           Row(
                             children: [
-                              SvgPicture.network(
-                                widget.data.paidByLogo!,
-                                width: 36,
-                                height: 36,
-                              ),
+                              countSpace > 0
+                                  ? SvgPicture.asset(
+                                      "assets/qris.svg",
+                                      width: 36,
+                                      height: 36,
+                                    )
+                                  : SvgPicture.network(
+                                      widget.data.paidByLogo!,
+                                      width: 36,
+                                      height: 36,
+                                    ),
                               const SizedBox(
                                 width: 12,
                               ),
@@ -256,11 +264,19 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
                                   child: Row(
                                 children: [
                                   Text(
-                                    'Transaction Fee',
+                                    'Biaya Admin ',
                                     style: nunitoTextStyle.copyWith(
                                       color: const Color(0xff6B7280),
                                       fontSize: 14,
                                       fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  Text(
+                                    '(${widget.data.transactionFee} + 0.7%)',
+                                    style: nunitoTextStyle.copyWith(
+                                      color: const Color(0xff6B7280),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700,
                                     ),
                                   ),
                                   // const SizedBox(width: 4),
@@ -397,7 +413,7 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
                                       ),
                                     ),
                                     TextSpan(
-                                      text: "Product Experience ID ",
+                                      text: widget.data.qrCreatedBy,
                                       style: nunitoTextStyle.copyWith(
                                         color: blackColor,
                                         fontSize: 14,
@@ -492,11 +508,19 @@ class _DetailTransactionPageState extends State<DetailTransactionPage> {
                         child: Row(
                           children: [
                             Text(
-                              'Transaction Fee',
+                              'Biaya Admin ',
                               style: nunitoTextStyle.copyWith(
                                 color: const Color(0xff6B7280),
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            Text(
+                              '(${widget.data.transactionFee} + 0.7%)',
+                              style: nunitoTextStyle.copyWith(
+                                color: const Color(0xff6B7280),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                             // IconButton(

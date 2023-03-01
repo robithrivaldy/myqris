@@ -48,7 +48,7 @@ class _TarikSaldoDiterimaSheetState extends State<TarikSaldoDiterimaSheet> {
               children: [
                 Expanded(
                   child: Text(
-                    "Saldo Anda sedang diproses untuk dikirim ke akun rekening Anda, silakan menunggu 1x24 jam.",
+                    "Saldo Anda sedang diproses untuk dikirim ke akun rekening Anda, maksimal 4 hari kerja.",
                     style: nunitoTextStyle.copyWith(
                       color: const Color(0xff545454),
                       fontSize: 14,

@@ -14,6 +14,8 @@ class TransactionDetailCard extends StatelessWidget {
     Color colorBadge = Colors.black;
     Color textBadge = Colors.black;
     var statusTxt = '';
+    var regExp = RegExp(" ");
+    var countSpace = regExp.allMatches(data.paidByLogo!).length;
     // final dateTime = DateTime.parse(data.createdAt!);
     // final format = DateFormat('dd MMMM yyyy HH:mm');
     // var tanggal = format.format(dateTime);
@@ -61,11 +63,17 @@ class TransactionDetailCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SvgPicture.network(
-            data.paidByLogo!,
-            width: 36,
-            height: 36,
-          ),
+          countSpace > 0
+              ? SvgPicture.asset(
+                  "assets/qris.svg",
+                  width: 36,
+                  height: 36,
+                )
+              : SvgPicture.network(
+                  data.paidByLogo!,
+                  width: 36,
+                  height: 36,
+                ),
           // const SizedBox(
           //   width: 12,
           // ),

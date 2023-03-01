@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:myqris/models/limit_saldo_model.dart';
+import 'package:myqris/models/limit_transaction_model.dart';
 import 'package:myqris/models/main_model.dart';
 import 'package:myqris/models/transactions_model.dart';
 import 'package:myqris/utils/constants.dart';
@@ -8,6 +10,56 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class TransactionService {
   SharedPreferences? _sharedPrefs;
+
+  Future<LimitSaldoModel> checkLimitSaldo() async {
+    _sharedPrefs = await SharedPreferences.getInstance();
+    var token = _sharedPrefs?.getString('token');
+    var url = '$baseUrl/check-limit-saldo';
+
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': '$token',
+    };
+
+    var response = await http.get(
+      Uri.parse(url),
+      headers: headers,
+    );
+
+    print(response.body);
+    if (response.statusCode == 422) {
+      return LimitSaldoModel.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Gagal');
+    }
+  }
+
+  Future<LimitTransactionModel> checkLimitTransaction(nominal) async {
+    _sharedPrefs = await SharedPreferences.getInstance();
+    var token = _sharedPrefs?.getString('token');
+    var url = '$baseUrl/request-qr';
+
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': '$token',
+    };
+
+    var body = jsonEncode({'price': nominal});
+
+    var response = await http.post(
+      Uri.parse(url),
+      headers: headers,
+      body: body,
+    );
+
+    print(response.body);
+    if (response.statusCode == 422) {
+      return LimitTransactionModel.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Gagal');
+    }
+  }
+
   Future<TransactionsModel> createQr(nominal) async {
     _sharedPrefs = await SharedPreferences.getInstance();
     var token = _sharedPrefs?.getString('token');
