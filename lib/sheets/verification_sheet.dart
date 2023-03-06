@@ -67,7 +67,7 @@ class _VerivicationSheetState extends State<VerivicationSheet> {
           imageFile == null) {
         MsgHelper.msgPeringatan("Masih ada yang kosong, silakan coba lagi");
       } else {
-        EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
+        EasyLoading.show(dismissOnTap: false);
         await authProvider
             .updateProfileWithImage(
                 name: nameController.text,

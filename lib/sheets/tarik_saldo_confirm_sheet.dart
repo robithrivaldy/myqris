@@ -19,7 +19,7 @@ class _TarikSaldoConfirmSheetState extends State<TarikSaldoConfirmSheet> {
   Widget build(BuildContext context) {
     WithdrawProvider withdrawProvider = Provider.of<WithdrawProvider>(context);
     confirmHandle() async {
-      EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
+      EasyLoading.show(dismissOnTap: false);
       await WithdrawService()
           .requestWithdraw(
               withdrawProvider.bankCode,

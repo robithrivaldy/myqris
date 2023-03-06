@@ -169,7 +169,7 @@ class _BuatQrSheetState extends State<BuatQrSheet> {
           alertNominal = true;
         });
       } else if ((intPrice > 999) && (intPrice <= 500000)) {
-        EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
+        EasyLoading.show(dismissOnTap: false);
 
         await TransactionService()
             .createQr(transactionProvider.nominalQrController.text

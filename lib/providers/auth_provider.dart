@@ -69,7 +69,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> getProfile() async {
     try {
-      // EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
+      // EasyLoading.show(dismissOnTap: false);
 
       ProfileModel data = await AuthService().getProfile();
       _profile = data;
@@ -129,7 +129,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> logout() async {
-    EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
+    EasyLoading.show(dismissOnTap: false);
     await AuthService().logout().then((value) async {
       await GoogleApi.logout();
       _sharedPrefs = await SharedPreferences.getInstance();

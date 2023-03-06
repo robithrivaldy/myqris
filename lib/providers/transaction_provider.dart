@@ -40,7 +40,7 @@ class TransactionProvider with ChangeNotifier {
   }
 
   Future<void> createQr() async {
-    EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
+    EasyLoading.show(dismissOnTap: false);
 
     await TransactionService()
         .createQr(nominalQrController.text.replaceAll('.', ''))
@@ -60,7 +60,7 @@ class TransactionProvider with ChangeNotifier {
 
   Future<void> getDetailTransaction(id) async {
     try {
-      EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
+      EasyLoading.show(dismissOnTap: false);
 
       TransactionsModel data =
           await TransactionService().getDetailTransaction(id);

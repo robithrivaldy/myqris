@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
     loginHandle() async {
-      EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
+      EasyLoading.show(dismissOnTap: false);
 
       await GoogleApi.login().then((value) async {
         await authProvider.login(email: value!.email, name: value.displayName!);

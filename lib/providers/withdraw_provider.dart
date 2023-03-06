@@ -79,7 +79,7 @@ class WithdrawProvider with ChangeNotifier {
 
   Future<void> getWithdraw() async {
     // try {
-    //   // EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
+    //   // EasyLoading.show(dismissOnTap: false);
 
     //   List<WithdrawModel> data = await WithdrawService().getWithdraw();
     //   // EasyLoading.dismiss();
@@ -111,7 +111,7 @@ class WithdrawProvider with ChangeNotifier {
 
   Future<void> getDetailWithdraw(id) async {
     try {
-      EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
+      EasyLoading.show(dismissOnTap: false);
 
       WithdrawModel data = await WithdrawService().getDetailWithdraw(id);
       EasyLoading.dismiss();
@@ -123,7 +123,7 @@ class WithdrawProvider with ChangeNotifier {
   }
 
   // Future<void> requestWithdraw() async {
-  //   EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
+  //   EasyLoading.show(dismissOnTap: false);
 
   //   await WithdrawService()
   //       .requestWithdraw(_bankCode, accountNumberController.text,

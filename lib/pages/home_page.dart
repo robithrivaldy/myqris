@@ -195,7 +195,7 @@ class _HomePageState extends State<HomePage>
     }
 
     tarikSaldoHandle() async {
-      EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
+      EasyLoading.show(dismissOnTap: false);
       if (mainProvider.main.status == "Activated") {
         await AuthService().getProfile().then((e) async {
           authProvider.profile = e;
@@ -276,7 +276,7 @@ class _HomePageState extends State<HomePage>
     }
 
     buatQrHandle() async {
-      EasyLoading.show(dismissOnTap: false, status: 'Mohon Tunggu');
+      EasyLoading.show(dismissOnTap: false);
 
       await TransactionService().checkLimitSaldo().then((e) async {
         EasyLoading.dismiss();
